@@ -1,8 +1,6 @@
 package eu.seaclouds.monitor.monitoringdamgenerator.dcgenerators;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -35,32 +33,25 @@ public class JavaAppDcGenerator implements DataCollectorGenerator {
 
     }
 
-    private List<Map<String, String>> getRequiredEnvVars(Module module,
+    private Map<String, String> getRequiredEnvVars(Module module,
             String monitoringManagerIp, int monitoringManagerPort) {
 
-        List<Map<String, String>> toReturn = new ArrayList<Map<String, String>>();
-        Map<String, String> temp;
+        Map<String, String> toReturn = new HashMap<String, String>();
 
-        temp = new HashMap<String, String>();
-        temp.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_IP, monitoringManagerIp);
-        toReturn.add(temp);
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_IP, monitoringManagerIp);
 
-        temp = new HashMap<String, String>();
-        temp.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
                 String.valueOf(monitoringManagerPort));
-        toReturn.add(temp);
         
-        temp = new HashMap<String, String>();
-        temp.put("MODULE_ID",
+        toReturn.put("MODULE_ID",
                 module.getModuleName());
-        toReturn.add(temp);
 
         return toReturn;
 
     }
 
     private Map<String, Object> generateDcNodeTemplate(
-            List<Map<String, String>> requiredEnvVars, Module module) {
+            Map<String, String> requiredEnvVars, Module module) {
 
         Map<String, Object> toSet;
         Map<String, Object> dataCollector;
