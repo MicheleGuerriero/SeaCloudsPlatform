@@ -106,7 +106,7 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
                 "$brooklyn:component(\"" + module.getModuleName()
                         + "\").attributeWhenReady(\"service.isUp\")");
 
-        properties.put("env", requiredEnvVars);
+        properties.put("shell.env", requiredEnvVars);
 
         dataCollector.put("type", "seaclouds.nodes.Datacollector");
         dataCollector.put("properties", properties);
