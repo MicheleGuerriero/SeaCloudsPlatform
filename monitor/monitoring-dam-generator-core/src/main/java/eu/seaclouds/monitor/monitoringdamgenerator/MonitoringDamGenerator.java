@@ -23,6 +23,23 @@ import eu.seaclouds.monitor.monitoringdamgenerator.rulesgenerators.Infrastructur
 public class MonitoringDamGenerator {
     private static final Logger logger = LoggerFactory
             .getLogger(MonitoringDamGenerator.class);
+    
+    private static final String DATA_COLLECTOR_NODE_TYPE = ""
+            + "derived_from: tosca.nodes.Root\n"
+            + "description: >\n"
+            + " A simple Tomcat server\n"
+            + "properties:\n"
+            + " install_latch:\n"
+            + "  type: string\n"
+            + "  required: false\n"
+            + " shell.env:\n"
+            + "  type: map\n"
+            + "  required: false\n"
+            + "  entry_schema:\n"
+            + "   type: string\n"
+            + "requirements:\n"
+            + " - host: tosca.nodes.Compute\n"
+            + " type: tosca.relationships.HostedOn\n";
 
     private URL monitoringManagerUrl;
 
@@ -136,8 +153,15 @@ public class MonitoringDamGenerator {
                 }
             }
         }
+        
              
         topology.put("node_templates", nodeTemplates);
+        
+        Map<String, Object> nodeTypes = (Map<String, Object>) topology.get("node_types");
+        
+        nodeTypes.put("seaclouds.nodes.Datacollector", DATA_COLLECTOR_NODE_TYPE);
+        
+        topology.put("node_types", nodeTypes);
         
         appMap.put("topology_template", topology);
         
@@ -146,5 +170,4 @@ public class MonitoringDamGenerator {
         return new MonitoringInfo(applicationRules, enrichedAdp);
         
     }
-
 }
