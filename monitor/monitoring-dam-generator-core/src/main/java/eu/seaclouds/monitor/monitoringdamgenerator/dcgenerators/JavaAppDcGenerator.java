@@ -18,14 +18,14 @@ public class JavaAppDcGenerator implements DataCollectorGenerator {
     private static final String START_SCRIPT_URL = "http://start.sh/";
 
     public void addDataCollector(Module module, String monitoringManagerIp,
-            int monitoringManagerPort) {
+            int monitoringManagerPort, String influxdbIp, int influxdbPort) {
 
         if (module.isJavaApp()) {
             logger.info("Generating required deployment script for the java-app-level Data Collector.");
 
             Map<String, Object> dataCollector = this.generateDcNodeTemplate(this
                     .getRequiredEnvVars(module, monitoringManagerIp,
-                            monitoringManagerPort), module);
+                            monitoringManagerPort, influxdbIp, influxdbPort), module);
 
             module.addDataCollector(dataCollector);           
         }
@@ -34,13 +34,19 @@ public class JavaAppDcGenerator implements DataCollectorGenerator {
     }
 
     private Map<String, String> getRequiredEnvVars(Module module,
-            String monitoringManagerIp, int monitoringManagerPort) {
+            String monitoringManagerIp, int monitoringManagerPort,
+            String influxdbIp, int influxdbPort) {
 
         Map<String, String> toReturn = new HashMap<String, String>();
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_IP, monitoringManagerIp);
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
+                String.valueOf(monitoringManagerPort));
+        
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_IP, monitoringManagerIp);
+
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_PORT,
                 String.valueOf(monitoringManagerPort));
         
         toReturn.put("MODULE_ID",

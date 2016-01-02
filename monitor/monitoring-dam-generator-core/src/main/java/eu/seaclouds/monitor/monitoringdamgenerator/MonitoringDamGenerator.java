@@ -42,10 +42,12 @@ public class MonitoringDamGenerator {
             + " type: tosca.relationships.HostedOn\n";
 
     private URL monitoringManagerUrl;
+    private URL influxdbUrl;
 
-    public MonitoringDamGenerator(URL monitoringManagerUrl) {
+    public MonitoringDamGenerator(URL monitoringManagerUrl, URL influxdbUrl) {
 
             this.monitoringManagerUrl = monitoringManagerUrl;
+            this.influxdbUrl = influxdbUrl;
 
     }
 
@@ -74,7 +76,9 @@ public class MonitoringDamGenerator {
                 
                 modacloudsDcScriptGen.addDataCollector(mainModule,
                         this.monitoringManagerUrl.getHost(),
-                        this.monitoringManagerUrl.getPort());
+                        this.monitoringManagerUrl.getPort(),
+                        this.influxdbUrl.getHost(),
+                        this.influxdbUrl.getPort());
             }
 
             for (Module module : modules) {
@@ -86,7 +90,9 @@ public class MonitoringDamGenerator {
 
                 javaDcScriptGen.addDataCollector(module,
                         this.monitoringManagerUrl.getHost(),
-                        this.monitoringManagerUrl.getPort());
+                        this.monitoringManagerUrl.getPort(),
+                        this.influxdbUrl.getHost(),
+                        this.influxdbUrl.getPort());
             }
 
             return this.buildMonitoringInfo(modules, adp);

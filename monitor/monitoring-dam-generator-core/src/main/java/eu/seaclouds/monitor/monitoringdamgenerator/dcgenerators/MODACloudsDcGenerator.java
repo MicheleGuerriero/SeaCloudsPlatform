@@ -18,7 +18,7 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
     private static final String START_SCRIPT_URL = "http://start.sh/";
 
     public void addDataCollector(Module module, String monitoringManagerIp,
-            int monitoringManagerPort) {
+            int monitoringManagerPort, String influxdbIp, int influxdbPort) {
 
         if(module.getHost().getDeploymentType().equals("IaaS")){
 
@@ -26,7 +26,7 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
 
             Map<String, Object> dataCollector = this.generateDcNodeTemplate(this
                     .getRequiredEnvVars(module, monitoringManagerIp,
-                            monitoringManagerPort), module);
+                            monitoringManagerPort, influxdbIp, influxdbPort), module);
 
             module.addDataCollector(dataCollector);
         }
@@ -34,7 +34,8 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
     }
 
     private Map<String, String> getRequiredEnvVars(Module module,
-            String monitoringManagerIp, int monitoringManagerPort) {
+            String monitoringManagerIp, int monitoringManagerPort,
+            String influxdbIp, int influxdbPort) {
 
         Map<String, String> toReturn = new HashMap<String, String>();
 
@@ -42,6 +43,11 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
                 String.valueOf(monitoringManagerPort));
+        
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_IP, influxdbIp);
+
+        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_PORT,
+                String.valueOf(influxdbPort));
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_DC_SYNC_PERIOD, "10");
 

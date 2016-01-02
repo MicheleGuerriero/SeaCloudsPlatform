@@ -21,6 +21,8 @@ public class DcGeneratorTests {
     private static final String TEST_MODULE = "test_module";
     private static final String TEST_MONITORING_MANAGER_IP = "127.0.0.1";
     private static final int TEST_MONITORING_MANAGER_PORT = 8170;
+    private static final String TEST_MONITORING_INFLUXDB_IP = "127.0.0.1";
+    private static final int TEST_MONITORING_INFLUXDB_PORT = 8083;
     private static final String JAVA_APP_ID="javaAppDc";
     private static final String PROPERTIES="properties";
     private static final String ENV_VARS="env";
@@ -43,7 +45,8 @@ public class DcGeneratorTests {
         testModule.setHost(testHost);
         testModule.setJavaApp(true);
         
-        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT);
+        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT,
+        		TEST_MONITORING_INFLUXDB_IP, TEST_MONITORING_INFLUXDB_PORT);
         
         Assert.assertNotNull(testModule);
         Assert.assertNotNull(testModule.getDataCollector());
@@ -100,7 +103,8 @@ public class DcGeneratorTests {
         testModule.setHost(testHost);
         
         
-        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT);
+        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT,
+        		TEST_MONITORING_INFLUXDB_IP, TEST_MONITORING_INFLUXDB_PORT);
         
         Assert.assertNotNull(testModule);
         Assert.assertNotNull(testModule.getDataCollector());
