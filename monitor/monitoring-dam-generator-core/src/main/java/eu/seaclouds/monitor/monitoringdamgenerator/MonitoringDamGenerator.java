@@ -163,7 +163,7 @@ public class MonitoringDamGenerator {
              
         topology.put("node_templates", nodeTemplates);
         
-        Map<String, Object> nodeTypes = (Map<String, Object>) topology.get("node_types");
+        Map<String, Object> nodeTypes = (Map<String, Object>) appMap.get("node_types");
         
         nodeTypes.put("seaclouds.nodes.Datacollector", DATA_COLLECTOR_NODE_TYPE);
         
