@@ -68,7 +68,7 @@ public class DamGeneratorTest {
         Map<String, Object> adpYaml = (HashMap<String, Object>) yml.load(adp);
 
         adpYaml = DamGenerator.translateAPD(adpYaml);
-        adpYaml = DamGenerator.addMonitorInfo(adp, "127.0.0.1", "8080");
+        adpYaml = DamGenerator.addMonitorInfo(adp, "127.0.0.1", "8080", "127.0.0.1", "8083");
 
         String dam = yml.dump(adpYaml);
         Assert.assertNotNull(adpYaml);
