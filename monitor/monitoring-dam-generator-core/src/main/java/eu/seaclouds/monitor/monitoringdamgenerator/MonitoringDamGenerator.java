@@ -54,6 +54,15 @@ public class MonitoringDamGenerator {
     private URL monitoringManagerUrl;
     private URL influxdbUrl;
 
+    public static void main(String[] args) throws IOException{
+        MonitoringDamGenerator service = new MonitoringDamGenerator(new URL("http://127.0.0.1:8170"), new URL("http://127.0.0.1:8083"));
+
+        MonitoringInfo returned = service
+                .generateMonitoringInfo(readFile("/Users/michele/Desktop/SEACLOUDS/adps/webchat-PaaS-ADP.yml",
+                        Charset.defaultCharset()));
+        System.out.println(returned.getReturnedAdp());
+    }
+    
     public MonitoringDamGenerator(URL monitoringManagerUrl, URL influxdbUrl) {
 
             this.monitoringManagerUrl = monitoringManagerUrl;

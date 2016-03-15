@@ -18,7 +18,7 @@ public class YAMLMonitorParser {
             .getLogger(YAMLMonitorParser.class);
 
     public static final String COMPUTE_NODE_PREFIX = "tosca.nodes.Compute";
-    public static final String PLATFORM_NODE_PREFIX = "tosca.nodes..Platform";
+    public static final String PLATFORM_NODE_PREFIX = "tosca.nodes.Platform";
     public static final String QOS_REQUIREMENT_POLICY = "QoSRequirements";
     public static final String RESPONSE_TIME_REQUIREMENT = "response_time";
     public static final String AVAILABILITY_REQUIREMENT = "availability";
