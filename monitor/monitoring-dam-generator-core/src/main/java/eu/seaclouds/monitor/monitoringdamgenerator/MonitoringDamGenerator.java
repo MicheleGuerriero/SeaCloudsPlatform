@@ -17,6 +17,8 @@ import org.yaml.snakeyaml.Yaml;
 
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -26,8 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 public class MonitoringDamGenerator {
     private static final Logger logger = LoggerFactory
@@ -61,6 +64,34 @@ public class MonitoringDamGenerator {
             this.influxdbUrl = influxdbUrl;
 
     }
+    
+    public static void main(String[] args){
+        
+        try {
+            String adpTest = readFile("/Users/michele/Desktop/SEACLOUDS/adps/WC - PaaS.yml", Charset.defaultCharset());
+
+            MonitoringDamGenerator gen = new MonitoringDamGenerator(new URL("http://127.0.0.1:8170/"), new URL("http://127.0.0.1:8086/"));
+            
+            MonitoringInfo info = gen.generateMonitoringInfo(adpTest);
+            
+            //System.out.println(info.getReturnedAdp());
+            
+            StringWriter writer = new StringWriter();
+            JAXBContext context = JAXBContext.newInstance(it.polimi.tower4clouds.rules.MonitoringRules.class);
+            Marshaller m = context.createMarshaller();
+            m.marshal(info.getApplicationMonitoringRules(), writer);
+            //System.out.println(writer.toString());
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     public MonitoringInfo generateMonitoringInfo(String adp) {
 
@@ -91,9 +122,7 @@ public class MonitoringDamGenerator {
     
                     modacloudsDcScriptGen.addDataCollector(mainModule,
                             this.monitoringManagerUrl.getHost(),
-                            this.monitoringManagerUrl.getPort(),
-                            this.influxdbUrl.getHost(),
-                            this.influxdbUrl.getPort());
+                            this.monitoringManagerUrl.getPort());
                 }
             }
 
@@ -112,17 +141,13 @@ public class MonitoringDamGenerator {
                     if (module.getLanguage().equals(JAVA_LANGUAGE)) {
                         javaDcScriptGen.addDataCollector(module,
                                 this.monitoringManagerUrl.getHost(),
-                                this.monitoringManagerUrl.getPort(),
-                                this.influxdbUrl.getHost(),
-                                this.influxdbUrl.getPort());
+                                this.monitoringManagerUrl.getPort());
                     }
                     
                     
                     seacloudsDcGen.addDataCollector(module,
                             this.monitoringManagerUrl.getHost(),
-                            this.monitoringManagerUrl.getPort(),
-                            this.influxdbUrl.getHost(),
-                            this.influxdbUrl.getPort());
+                            this.monitoringManagerUrl.getPort());
                     
                 }
                 
@@ -189,6 +214,7 @@ public class MonitoringDamGenerator {
         }
 
         for(Module module: modules){
+            System.out.println(module.getType());
             for(Map<String, Object> dataCollector: module.getDataCollector()){
                 for(String id: dataCollector.keySet()){
                     nodeTemplates.put(id, dataCollector.get(id));
@@ -199,7 +225,7 @@ public class MonitoringDamGenerator {
             currentNodeTemplate = (Map<String, Object>) nodeTemplates.get(module.getModuleName());
             properties = (Map<String, Object>) currentNodeTemplate.get("properties");
             
-            if(currentNodeTemplate.get("properties") != null){
+            if(currentNodeTemplate.get("properties") != null & !variablesToSet.isEmpty()){
                 currentVars = (Map<String, Object>) properties.get("shell.env");
                 if(currentVars != null){
                     for(String variable : variablesToSet.keySet()){

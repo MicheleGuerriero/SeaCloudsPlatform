@@ -1,6 +1,5 @@
 package eu.seaclouds.monitor.monitoringdamgenerator.dcgenerators;
 
-import eu.seaclouds.monitor.monitoringdamgenerator.adpparsing.Metrics;
 import eu.seaclouds.monitor.monitoringdamgenerator.adpparsing.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,41 +15,24 @@ public class SeaCloudsDcGenerator implements DataCollectorGenerator {
             .getLogger(SeaCloudsDcGenerator.class);
     
     private static final String SEACLOUDS_DC_ID = "seacloudsDc";
-    private static final String PHP_LANGUAGE = "PHP";
     private static final String START_SCRIPT_URL = "https://s3-eu-west-1.amazonaws.com/seaclouds-dc/installSeaCloudsDc.sh";
     private static final String MODULE_IP ="MODULE_IP";
     private static final String MODULE_PORT ="MODULE_PORT";
-    private Metrics metrics;
-
-    public SeaCloudsDcGenerator() {
-        List<String> toAdd = new ArrayList<String>();
-        
-        toAdd.add("NUROServerLastThirtySecondsAverageRunTime");
-        toAdd.add("NUROServerLastThirtySecondsPlayerCount");
-        toAdd.add("NUROServerLastThirtySecondsRequestCount");
-        toAdd.add("NUROServerLastThirtySecondsAverageThroughput");
-        toAdd.add("AppAvailability");
-
-        this.metrics = new Metrics(toAdd);
-        
-    }
 
     @Override
-    public void addDataCollector(Module module, String monitoringManagerIp, int monitoringManagerPort,
-            String influxdbIp, int influxdbPort) {
+    public void addDataCollector(Module module, String monitoringManagerIp, int monitoringManagerPort) {
 
         logger.info("Generating required deployment script for the MODAClouds Data Collector.");
     
         Map<String, Object> dataCollector = this.generateDcNodeTemplate(this
                 .getRequiredEnvVars(module, monitoringManagerIp,
-                        monitoringManagerPort, influxdbIp, influxdbPort), module);
+                        monitoringManagerPort), module);
     
         module.addDataCollector(dataCollector);
     }
     
     private Map<String, String> getRequiredEnvVars(Module module,
-            String monitoringManagerIp, int monitoringManagerPort,
-            String influxdbIp, int influxdbPort) {
+            String monitoringManagerIp, int monitoringManagerPort) {
 
         Map<String, String> toReturn = new HashMap<String, String>();
 
@@ -58,26 +40,12 @@ public class SeaCloudsDcGenerator implements DataCollectorGenerator {
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
                 String.valueOf(monitoringManagerPort));
-        
-        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_IP, influxdbIp);
-
-        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_PORT,
-                String.valueOf(influxdbPort));
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_INTERNAL_COMPONENT_TYPE,
                 module.getModuleName());
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_INTERNAL_COMPONENT_ID,
                 module.getModuleName() + "_ID");
-
-        if(module.getLanguage().equals(PHP_LANGUAGE)){
-            toReturn.put(METRICS,
-                    metrics.toString());           
-        } else{
-            toReturn.put(METRICS,
-                    new String("AppAvailability"));           
-        }
-
         
         toReturn.put(MODULE_IP,
                 "$brooklyn:component(\"" + module.getModuleName()

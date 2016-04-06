@@ -46,8 +46,7 @@ public class DcGeneratorTests {
         testModule.setHost(testHost);
         testModule.setLanguage(JAVA_LANGUAGE);
         
-        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT,
-        		TEST_MONITORING_INFLUXDB_IP, TEST_MONITORING_INFLUXDB_PORT);
+        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT);
         
         Assert.assertNotNull(testModule);
         Assert.assertNotNull(testModule.getDataCollector());
@@ -104,8 +103,7 @@ public class DcGeneratorTests {
         testModule.setHost(testHost);
         
         
-        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT,
-        		TEST_MONITORING_INFLUXDB_IP, TEST_MONITORING_INFLUXDB_PORT);
+        testGenerator.addDataCollector(testModule, TEST_MONITORING_MANAGER_IP, TEST_MONITORING_MANAGER_PORT);
         
         Assert.assertNotNull(testModule);
         Assert.assertNotNull(testModule.getDataCollector());

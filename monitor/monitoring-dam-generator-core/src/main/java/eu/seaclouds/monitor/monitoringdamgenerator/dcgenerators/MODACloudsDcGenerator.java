@@ -1,6 +1,5 @@
 package eu.seaclouds.monitor.monitoringdamgenerator.dcgenerators;
 
-import eu.seaclouds.monitor.monitoringdamgenerator.adpparsing.Metrics;
 import eu.seaclouds.monitor.monitoringdamgenerator.adpparsing.Module;
 import eu.seaclouds.monitor.monitoringdamgenerator.dcgenerators.DataCollectorGenerator;
 import org.slf4j.Logger;
@@ -18,33 +17,22 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
 
     private static final String MODACLOUDS_DC_ID = "modacloudsDc";
     private static final String START_SCRIPT_URL = "https://s3-eu-west-1.amazonaws.com/modacloudsdc-start-script/installModacloudsDc.sh";
-    private Metrics metrics;
 
-    public MODACloudsDcGenerator(){
-        List<String> toAdd = new ArrayList<String>();
-        
-        toAdd.add("AverageCpuUtilization");
-        toAdd.add("AverageRamUtilization");
-        
-        this.metrics = new Metrics(toAdd);
-    }
-    
     public void addDataCollector(Module module, String monitoringManagerIp,
-        int monitoringManagerPort, String influxdbIp, int influxdbPort) {
+        int monitoringManagerPort) {
 
         logger.info("Generating required deployment script for the MODAClouds Data Collector.");
 
         Map<String, Object> dataCollector = this.generateDcNodeTemplate(this
                 .getRequiredEnvVars(module, monitoringManagerIp,
-                        monitoringManagerPort, influxdbIp, influxdbPort), module);
+                        monitoringManagerPort), module);
 
         module.addDataCollector(dataCollector);
 
     }
 
     private Map<String, String> getRequiredEnvVars(Module module,
-            String monitoringManagerIp, int monitoringManagerPort,
-            String influxdbIp, int influxdbPort) {
+            String monitoringManagerIp, int monitoringManagerPort) {
 
         Map<String, String> toReturn = new HashMap<String, String>();
 
@@ -52,11 +40,6 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_MANAGER_PORT,
                 String.valueOf(monitoringManagerPort));
-        
-        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_IP, influxdbIp);
-
-        toReturn.put(MODACLOUDS_TOWER4CLOUDS_INFLUXDB_PORT,
-                String.valueOf(influxdbPort));
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_DC_SYNC_PERIOD, "10");
 
@@ -73,11 +56,6 @@ public class MODACloudsDcGenerator implements DataCollectorGenerator {
 
         toReturn.put(MODACLOUDS_TOWER4CLOUDS_VM_ID, module.getHost().getHostName()
                 + "_ID");
-        
-        toReturn.put(METRICS,
-                metrics.toString());
-        
-        
 
         return toReturn;
 
