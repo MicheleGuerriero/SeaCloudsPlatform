@@ -62,13 +62,13 @@ public class MonitoringDamGenerator {
         try {
             gen = new MonitoringDamGenerator(new URL("http://128.0.0.1:8080/"), new URL("http://128.0.0.1:8083/"));
             MonitoringInfo info = gen.generateMonitoringInfo(readFile("resources/adp_example.yml", Charset.defaultCharset()));
-            System.out.println(info.getReturnedAdp());
+            //System.out.println(info.getReturnedAdp());
 
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(MonitoringRules.class);            
             Marshaller m = context.createMarshaller();
             m.marshal(info.getApplicationMonitoringRules(), writer);
-            //System.out.println(writer.toString());
+            System.out.println(writer.toString());
             
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block

@@ -36,7 +36,8 @@ public class NuroRulesGenerator {
                 this.generateThirtySecondsThroughputRule(module)
                         .getMonitoringRules());
         toReturn.getMonitoringRules().addAll(
-                this.generateNuroSlaRules(module).getMonitoringRules());
+                this.generateNuroSlaRules(module)
+                        .getMonitoringRules());
 
         return toReturn;
     }
@@ -44,14 +45,20 @@ public class NuroRulesGenerator {
     private MonitoringRules generateNuroSlaRules(Module module) {
 
         Map<String, String> parameters = new HashMap<String, String>();
+        MonitoringRules toReturn = new MonitoringRules();
         parameters.put("samplingTime", "5");
-        return RuleSchemaGenerator.fillMonitoringRuleSchema(
-                "nuroThirtySecondsSlaRuntimeRule", "30", "30",
-                "InternalComponent", module.getModuleName(),
-                "NUROServerLastTenSecondsAverageRunTime", parameters,
-                "Average", "InternalComponent",
-                "METRIC > " + module.getResponseTime() / 1000,
-                "NUROServerLastThirtySecondsAverageRunTime_Violation");
+        
+        if(module.existResponseTimeRequirement()){
+            toReturn.getMonitoringRules().addAll(RuleSchemaGenerator.fillMonitoringRuleSchema(
+                    "nuroThirtySecondsSlaRuntimeRule" + module.getModuleName(), "30", "30",
+                    "InternalComponent", module.getModuleName(),
+                    "NUROServerLastTenSecondsAverageRunTime", parameters,
+                    "Average", "InternalComponent",
+                    "METRIC > " + module.getResponseTime(),
+                    "NUROServerLastThirtySecondsAverageRunTime_Violation_" + module.getModuleName()).getMonitoringRules());
+        }
+        
+        return toReturn;
 
     }
 
@@ -60,7 +67,7 @@ public class NuroRulesGenerator {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("samplingTime", "5");
         return RuleSchemaGenerator.fillMonitoringRuleSchema(
-                "nuroThirtySecondsRuntimeRule", "30", "30",
+                "nuroThirtySecondsRuntimeRule" + module.getModuleName(), "30", "30",
                 "InternalComponent", module.getModuleName(),
                 "NUROServerLastTenSecondsAverageRunTime", parameters,
                 "Average", "InternalComponent", null,
@@ -73,7 +80,7 @@ public class NuroRulesGenerator {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("samplingTime", "10");
         return RuleSchemaGenerator.fillMonitoringRuleSchema(
-                "nuroThirtySecondsPlayerCountRule", "30", "30",
+                "nuroThirtySecondsPlayerCountRule" + module.getModuleName(), "30", "30",
                 "InternalComponent", module.getModuleName(),
                 "NUROServerLastTenSecondsPlayerCount", parameters, "Sum",
                 "InternalComponent", null,
@@ -86,7 +93,7 @@ public class NuroRulesGenerator {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("samplingTime", "10");
         return RuleSchemaGenerator.fillMonitoringRuleSchema(
-                "nuroThirtySecondsRequestCountRule", "30", "30",
+                "nuroThirtySecondsRequestCountRule" + module.getModuleName(), "30", "30",
                 "InternalComponent", module.getModuleName(),
                 "NUROServerLastTenSecondsRequestCount", parameters, "Sum",
                 "InternalComponent", null,
@@ -99,7 +106,7 @@ public class NuroRulesGenerator {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("samplingTime", "5");
         return RuleSchemaGenerator.fillMonitoringRuleSchema(
-                "nuroThirtySecondsThroughput", "30", "30", "InternalComponent",
+                "nuroThirtySecondsThroughput" + module.getModuleName(), "30", "30", "InternalComponent",
                 module.getModuleName(),
                 "NUROServerLastTenSecondsAverageThroughput", parameters,
                 "Average", "InternalComponent", null,
